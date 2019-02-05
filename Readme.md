@@ -60,9 +60,10 @@ Function Download_MSI_Installer {
 Function Install_Script {
     # $msifile = Get-ChildItem -Path $out -File -Filter '*.ms*'
     # $FileExists = Test-Path $msifile -IsValid
+    $msifile = "c:\some.msi"
 
     $DataStamp = get-date -Format yyyyMMddTHHmmss
-    $logFile = '{0}-{1}.log' -f $msifile.fullname, $DataStamp
+    $logFile = 'somelog-{0}.log' -f $DataStamp
     $MSIArguments = @(
         "/i"
         ('"{0}"' -f $msifile)

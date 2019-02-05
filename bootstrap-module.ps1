@@ -26,8 +26,11 @@ new-module -name CustomInstaller -scriptblock {
             # $msifile = Get-ChildItem -Path $out -File -Filter '*.ms*'
             # $FileExists = Test-Path $msifile -IsValid
 
+            $msifile = "c:\some.msi"
+
             $DataStamp = get-date -Format yyyyMMddTHHmmss
-            $logFile = '{0}-{1}.log' -f $msifile.fullname, $DataStamp
+            $logFile = '{0}-{1}.log' -f $msifile, $DataStamp
+                        
             $MSIArguments = @(
                 "/i"
                 ('"{0}"' -f $msifile)
