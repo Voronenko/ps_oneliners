@@ -180,7 +180,7 @@ Acceptance: PASSED
 
 ## Option C - X-Liner
 
-Put overrides only into $overrideParams , other will be picked up from default values in install script
+Put overrides only into $overrideParams , other will be picked up from default values in install script, downloaded from the remote location
 
 ```ps
 
@@ -215,9 +215,9 @@ For example, we download smth from internet
 Acceptance: PASSED
 
 
-# Option D - One liner using module
+# Option D - One liner using powershell module
 
-Requiries installation logic packed as a powershell module (see `bootstrap-module.ps1`)
+As stated, requiries installation logic packed as a powershell module (see `bootstrap-module.ps1`)
 
 ```ps
 
