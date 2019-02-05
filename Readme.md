@@ -9,6 +9,7 @@ For example, if I want to configure my favorite shell on some new VPS
 
 
 ```sh
+
 curl -sSL https://bit.ly/getmyshell > getmyshell.sh && chmod +x getmyshell.sh && ./getmyshell.sh
 # might be shortened to, if I do not need to inspect shell file contents
 curl -sSL https://bit.ly/getmyshell | bash -s
@@ -18,6 +19,7 @@ curl -sSL https://bit.ly/getmyshell | bash -s
 or configure my dotfiles configuration on a more permanent box
 
 ```sh
+
 curl -sSL https://bit.ly/slavkodotfiles > bootstrap.sh && chmod +x bootstrap.sh
 ./bootstrap.sh  <optional: simple | full | docker>
 ```
@@ -26,6 +28,7 @@ That approach works pretty well on linux, thus when I have windows related work.
 Few examples from my winfiles:  script below configures my powershell profile on a new windows server, and optionally installs my "swiss knife" set of tools for the windows system.
 
 ```ps
+
 Set-ExecutionPolicy Bypass -Scope Process -Force; 
 iex ((New-Object System.Net.WebClient).DownloadString('https://bit.ly/winfiles'))
 ```
@@ -103,11 +106,37 @@ user can tune following script parameters:
 ```ps
 
 # optional download
-(new-object net.webclient).DownloadFile('https://raw.githubusercontent.com/Voronenko/ps_onelinersiles/master/bootstrap.ps1','c:\bootstrap.ps1')
+(new-object net.webclient).DownloadFile('https://raw.githubusercontent.com/Voronenko/ps_oneliners/master/bootstrap.ps1','c:\bootstrap.ps1')
 # install with optional overrides
 c:\bootstrap.ps1 -requiredParam AAA -optionalParamWithDefault BBB -optionalParamFromEnvironment CCC
 
 ```
+
+Validation - no overrides
+
+```
+PS C:\> c:\bootstrap.ps1
+
+cmdlet bootstrap.ps1 at command pipeline position 1
+Supply values for the following parameters:
+requiredParam: RRR
+About to execute some bootstrap logic with params RRR https://github.com/Voronenko/ps_oneliners on EC2AMAZ-9A8TRAV
+For example, we download smth from internet
+About to install msifile with arguments  /i "c:\some.msi" /qn /norestart /L*v c:\some.msi-20190205T221234.log  REQUIRED_PARAM=RRR OPTIONAL_PARAM_WITH_DEFAULT=https://github.com/Voronenko/ps_oneliners OPTIONAL_PARAM_FROM_ENVIRONMENT=EC2AMAZ-9A8TRAV
+```
+
+Validation - with overrides
+
+```
+PS C:\> c:\bootstrap.ps1 -requiredParam AAA -optionalParamWithDefault BBB -optionalParamFromEnvironment CCC
+About to execute some bootstrap logic with params AAA BBB on CCC
+For example, we download smth from internet
+About to install msifile with arguments  /i "c:\some.msi" /qn /norestart /L*v c:\some.msi-20190205T221400.log  REQUIRED_PARAM=AAA OPTIONAL_PARAM_WITH_DEFAULT=BBB OPTIONAL_PARAM_FROM_ENVIRONMENT=CCC
+```
+
+Acceptance: PASSED
+
+
 
 
 ## Option B - X-Liner from pre-downloaded script
@@ -128,7 +157,25 @@ $ScriptPath = 'c:\bootstrap.ps1'
 $sb = [scriptblock]::create(".{$(get-content $ScriptPath -Raw)} $(&{$args} @overrideParams)")
 Invoke-Command -ScriptBlock $sb
 
+# ...
+
+# Validation:
+About to execute some bootstrap logic with params RRR https://github.com/Voronenko/ps_oneliners on EC2AMAZ-9A8TRAV
+
+# Validation - no overrides
+
+$overrideParamsNone = @{
+    requiredParam = 'RRR'
+}
+$sb = [scriptblock]::create(".{$(get-content $ScriptPath -Raw)} $(&{$args} @overrideParamsNone)")
+Invoke-Command -ScriptBlock $sb
+# ...
+About to execute some bootstrap logic with params AAAA BBB on CCC
+
+
 ```
+
+Acceptance: PASSED
 
 
 ## Option C - X-Liner
@@ -144,12 +191,28 @@ $overrideParams = @{
 }
 
 
-$ScriptPath = ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/Voronenko/ps_onelinersiles/master/bootstrap.ps1'))
-$sb = [scriptblock]::create(".{$(ScriptPath)} $(&{$args} @overrideParams)")
+$ScriptPath = ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/Voronenko/ps_oneliners/master/bootstrap.ps1'))
+$sb = [scriptblock]::create(".{$($ScriptPath)} $(&{$args} @overrideParams)")
 Invoke-Command -ScriptBlock $sb
+
+# output of the ^ command
+About to execute some bootstrap logic with params AAAA BBB on CCC
+
+$overrideParamsNone = @{
+    requiredParam = 'RRR'
+}
+
+$ScriptPath = ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/Voronenko/ps_oneliners/master/bootstrap.ps1'))
+$sb = [scriptblock]::create(".{$($ScriptPath)} $(&{$args} @overrideParamsNone)")
+Invoke-Command -ScriptBlock $sb
+
+# output of the ^ command
+About to execute some bootstrap logic with params RRR https://github.com/Voronenko/ps_oneliners on EC2AMAZ-9A8TRAV
+For example, we download smth from internet
 
 ```
 
+Acceptance: PASSED
 
 
 # Option D - One liner using module
@@ -158,11 +221,34 @@ Requiries installation logic packed as a powershell module (see `bootstrap-modul
 
 ```ps
 
-. { iwr -useb https://raw.githubusercontent.com/Voronenko/bootstrap-module.ps1 } | iex; install -requiredParam AAA -optionalParamWithDefault BBB -optionalParamFromEnvironment CCC
+. { iwr -useb https://raw.githubusercontent.com/Voronenko/ps_oneliners/master/bootstrap-module.ps1 } | iex; install -requiredParam AAA -optionalParamWithDefault BBB -optionalParamFromEnvironment CCC
+
+# output of the ^ command
+
+ModuleType Version    Name                                ExportedCommands
+---------- -------    ----                                ----------------
+Script     0.0        CustomInstaller                     {Install-Project, install}
+About to execute some bootstrap logic with params AAA BBB on CCC
+
+# Validation - no overrides
+
+. { iwr -useb https://raw.githubusercontent.com/Voronenko/ps_oneliners/master/bootstrap-module.ps1 } | iex; install
+
+# output of the ^ command
+
+ModuleType Version    Name                                ExportedCommands
+---------- -------    ----                                ----------------
+Script     0.0        CustomInstaller                     {Install-Project, install}
+
+cmdlet Install-Project at command pipeline position 1
+Supply values for the following parameters:
+requiredParam: RRR
 
 ```
 
-where bootstrap-module.ps1 is our first file, but packed/wrapped into a module.
+Acceptance: PASSED
+
+where bootstrap-module.ps1 is our original bootstrap file, but packed/wrapped into a module.
 
 ```ps
 
@@ -231,3 +317,7 @@ new-module -name CustomInstaller -scriptblock {
 So far option D is the most one-linish :)
 
 Check out  https://github.com/Voronenko/ps_oneliners for examples from article.
+
+# Summary
+
+We now have few approaches to choose from, to implement short "one liners" to bootstrap some logic with powershell
