@@ -1,5 +1,5 @@
 
-## Quite long intro
+## Intro
 
 Coming from unix world, I really enjoj so-called one liners - easy to remember commands that do some useful bootstraping.
 
@@ -100,7 +100,7 @@ user can tune following script parameters:
 
 ```
 
-## Option A - almost manual
+## Option A - almost manual "bootstrap.ps1 -param value"
 
 
 ```ps
@@ -142,7 +142,8 @@ Acceptance: PASSED
 ## Option B - X-Liner from pre-downloaded script
 
 
-Put overrides only into $overrideParams , other will be picked up from default values in install script
+Put overrides only into $overrideParams , other will be picked up from default values in install script.
+Pros - you can detect and programmatically amend override params.
 
 
 ```ps
@@ -178,9 +179,10 @@ About to execute some bootstrap logic with params AAAA BBB on CCC
 Acceptance: PASSED
 
 
-## Option C - X-Liner
+## Option C - X-Liner executing script from remote location
 
 Put overrides only into $overrideParams , other will be picked up from default values in install script, downloaded from the remote location
+Pros - you can detect and programmatically amend override params, bootstrap script can be located on your download location.
 
 ```ps
 
@@ -215,9 +217,11 @@ For example, we download smth from internet
 Acceptance: PASSED
 
 
-# Option D - One liner using powershell module
+# Option D - Real one liner using powershell module and iwr + iex
 
 As stated, requiries installation logic packed as a powershell module (see `bootstrap-module.ps1`)
+
+`. { iwr -useb https://path/to/bootsrap.ps1 } | iex; function -param value`
 
 ```ps
 
