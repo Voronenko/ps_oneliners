@@ -5,7 +5,7 @@ Coming from unix world, I really enjoj so-called one liners - easy to remember c
 
 Few examples from my dotfiles: https://github.com/voronenko/dotfiles
 
-For example, if I want to configure my favorite shell on some new VPS
+Saying, if I want to configure my favorite shell on some new VPS
 
 
 ```sh
