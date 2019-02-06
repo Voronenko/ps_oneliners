@@ -1,7 +1,7 @@
 
 ## Intro
 
-Coming from unix world, I really enjoj so-called one liners - easy to remember commands that do some useful bootstraping.
+Coming from unix world, I really enjoy so-called one-liners - easy to remember commands that do some useful bootstrapping.
 
 Few examples from my dotfiles: https://github.com/voronenko/dotfiles
 
@@ -24,8 +24,8 @@ curl -sSL https://bit.ly/slavkodotfiles > bootstrap.sh && chmod +x bootstrap.sh
 ./bootstrap.sh  <optional: simple | full | docker>
 ```
 
-That approach works pretty well on linux, thus when I have windows related work. I am trying to reuse similar approach.
-Few examples from my winfiles:  script below configures my powershell profile on a new windows server, and optionally installs my "swiss knife" set of tools for the windows system.
+That approach works pretty well on linux, thus when I have windows related work, I am trying to reuse similar approach.
+Few examples from my winfiles:  script below configures my PowerShell profile on a new windows server, and optionally installs my "swiss knife" set of tools for the windows system.
 
 ```ps
 
@@ -37,7 +37,7 @@ Sometimes on Windows it is needed to additionally pre-configure bootstrap script
 
 ## Challenge definition
 
-Assume we have some bootstrap logic implemented in powershell, uploaded to some public location and we need oneliner for easier install.
+Assume we have some bootstrap logic implemented in PowerShell, uploaded to some public location and we need one-liner for easier install.
 For purposes of the demo - that might be script, that installs some custom MSI artifact:
 
 ```ps
@@ -102,6 +102,9 @@ user can tune following script parameters:
 
 ## Option A - almost manual "bootstrap.ps1 -param value"
 
+Pros: actually nothing is needed, just works
+
+Cons: harder to tune parameters programmatically
 
 ```ps
 
@@ -143,7 +146,7 @@ Acceptance: PASSED
 
 
 Put overrides only into $overrideParams , other will be picked up from default values in install script.
-Pros - you can detect and programmatically amend override params.
+Pros - you can detect and programmatically amend override parameters.
 
 
 ```ps
@@ -182,7 +185,8 @@ Acceptance: PASSED
 ## Option C - X-Liner executing script from remote location
 
 Put overrides only into $overrideParams , other will be picked up from default values in install script, downloaded from the remote location
-Pros - you can detect and programmatically amend override params, bootstrap script can be located on your download location.
+
+Pros - you can detect and programmatically amend override parameters, bootstrap script can be located on your download location.
 
 ```ps
 
@@ -217,9 +221,9 @@ For example, we download smth from internet
 Acceptance: PASSED
 
 
-# Option D - Real one liner using powershell module and iwr + iex
+## Option D - Real one-liner using PowerShell module and iwr + iex
 
-As stated, requiries installation logic packed as a powershell module (see `bootstrap-module.ps1`)
+As stated, requiries installation logic packed as a PowerShell module (see `bootstrap-module.ps1`)
 
 `. { iwr -useb https://path/to/bootsrap.ps1 } | iex; function -param value`
 
@@ -324,4 +328,4 @@ Check out  https://github.com/Voronenko/ps_oneliners for examples from article.
 
 # Summary
 
-We now have few approaches to choose from, to implement short "one liners" to bootstrap some logic with powershell
+We now have few approaches to choose from, to implement short "one-liners" to bootstrap some logic with PowerShell
