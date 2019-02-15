@@ -46,8 +46,14 @@ new-module -name CustomInstaller -scriptblock {
             #     Write-Host "Finished msi "$msifile
             # }
 
-            # Else {Write-Host "File $out doesn't exists - failed to download or corrupted. Please check."}
+            # Else {
+            # Write-Error "File $out doesn't exists - failed to download or corrupted. Please check." -ErrorAction Stop
+            # }
         }
+
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = "Stop"
+        $PSDefaultParameterValues['*:ErrorAction'] = 'Stop'        
 
         Download_MSI_Installer
         Install_Script        
